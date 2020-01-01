@@ -45,8 +45,8 @@ transitions s (t@((a, _), _) : ts)
 
 
 alphabet :: LTS -> Alphabet
-alphabet
-  = undefined
+alphabet 
+  = nub . map snd
 
 ------------------------------------------------------
 -- PART II
