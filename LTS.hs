@@ -37,8 +37,12 @@ states t
         = c : c' : (states' cs)
 
 transitions :: State -> LTS -> [Transition]
-transitions
-  = undefined
+transitions s []
+  = []
+transitions s (t@((a, _), _) : ts)
+  | s == a = (t : transitions s ts)
+  | otherwise = transitions s ts
+
 
 alphabet :: LTS -> Alphabet
 alphabet
