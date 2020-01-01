@@ -27,8 +27,14 @@ lookUp i p
   = fromJust $ lookup i p
 
 states :: LTS -> [State]
-states
-  = undefined
+states t
+  = nub (states' (map fst t))
+    where
+      states' :: [(State, State)] -> [State]
+      states' []
+        = []
+      states' ((c, c') : cs)
+        = c : c' : (states' cs)
 
 transitions :: State -> LTS -> [Transition]
 transitions
