@@ -45,15 +45,19 @@ transitions s (t@((a, _), _) : ts)
 
 
 alphabet :: LTS -> Alphabet
-alphabet 
+alphabet
   = nub . map snd
 
 ------------------------------------------------------
 -- PART II
 
 actions :: Process -> [Id]
-actions
-  = undefined
+actions (Prefix i p)
+  = i : actions p
+actions (Choice (p:ps))
+  = actions p ++ actions (Choice ps)
+actions _
+  = []
 
 accepts :: [Id] -> [ProcessDef] -> Bool
 --Pre: The first item in the list of process definitions is
