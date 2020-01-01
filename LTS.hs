@@ -23,8 +23,8 @@ type StateMap = [((State, State), State)]
 
 lookUp :: Eq a => a -> [(a, b)] -> b
 --Pre: The item is in the table
-lookUp
-  = undefined
+lookUp i p
+  = fromJust $ lookup i p
 
 states :: LTS -> [State]
 states
