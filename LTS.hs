@@ -59,11 +59,24 @@ actions (Choice (p:ps))
 actions _
   = []
 
-accepts :: [Id] -> [ProcessDef] -> Bool
+--accepts :: [Id] -> [ProcessDef] -> Bool
 --Pre: The first item in the list of process definitions is
 --     that of the start process.
-accepts
-  = undefined
+accepts [] _
+  = True
+accepts m p
+  = accepts' m ((snd . head) p)
+    where
+      accepts' [] _
+        = True
+      accepts' m' (Ref r)
+        = accepts' m' (lookUp r p)
+      accepts' m' (Choice c)
+        = or $ map (accepts' m') c
+      accepts' (i:is) (Prefix n e)
+        | n == i = accepts' is e
+        | otherwise = False
+
 
 ------------------------------------------------------
 -- PART III
