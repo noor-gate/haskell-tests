@@ -81,16 +81,25 @@ accepts m p
 ------------------------------------------------------
 -- PART III
 
---composeTransitions :: Transition -> Transition
---                   -> Alphabet -> Alphabet
---                   -> StateMap
---                   -> [Transition]
+composeTransitions :: Transition -> Transition
+                   -> Alphabet -> Alphabet
+                   -> StateMap
+                   -> [Transition]
 --Pre: The first alphabet is that of the LTS from which the first transition is
 --     drawn; likewise the second.
 --Pre: All (four) pairs of source and target states drawn from the two transitions
 --     are contained in the given StateMap.
-composeTransitions
-  = undefined
+composeTransitions ((s, t), i) ((s', t'), i') a1 a2 m
+  | i == i' = [((a, b), i)]
+  | elem i a2 && elem i' a1 = []
+  | elem i' a1 = [((a, c), i)]
+  | elem i a2 = [((a, d), i')]
+  | otherwise = [((a, c), i), ((a, d), i')]
+    where
+      a = lookUp (s, s') m
+      b = lookUp (t, t') m
+      c = lookUp (t, s') m
+      d = lookUp (s, t') m
 
 pruneTransitions :: [Transition] -> LTS
 pruneTransitions
