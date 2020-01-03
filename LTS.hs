@@ -102,15 +102,33 @@ composeTransitions ((s, t), i) ((s', t'), i') a1 a2 m
       d = lookUp (s, t') m
 
 pruneTransitions :: [Transition] -> LTS
-pruneTransitions
-  = undefined
+pruneTransitions n
+  = nub $ visit 0 []
+    where
+      visit :: State -> [State] -> [Transition]
+      visit s v
+        | elem s v = []
+        | otherwise = t ++ concatMap (flip visit (s : v)) (map (snd . fst) (t))
+          where
+            t = transitions s n
 
 ------------------------------------------------------
 -- PART IV
 
-compose :: LTS -> LTS -> LTS
-compose
-  = undefined
+--compose :: LTS -> LTS -> LTS
+compose t1 t2
+  = (pruneTransitions . concat) [composeTransitions x y (alphabet t1) (alphabet t2) statePr | (x, y) <- cartTr]
+    where
+      statePr = zip [(x, y) | x <- (states t1), y <- (states t2)]
+                [0..length (states t1) * length (states t2) - 1]
+
+      cartTr  = nub [( ((fst x, t), lookUp (fst x, t) t1), ((snd x, t'), lookUp (snd x, t') t2)) | (x, y) <- statePr, t <- (map (snd . fst)
+                (transitions (fst x) t1)), t' <- (map (snd . fst)
+                (transitions (snd x) t2))]
+
+
+
+
 
 ------------------------------------------------------
 -- PART V
